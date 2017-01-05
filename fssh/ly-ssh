@@ -1,0 +1,20 @@
+#!/bin/sh
+
+cfile="/home/liuyang1-iri/etc/config.yaml"
+
+if [ -z $1 ];then
+    ly-go-crt -c $cfile
+    exit 1
+fi
+
+if [ -z $2 ];then
+    ly-go-crt -c ~/etc/config.yaml -p $1
+    exit 1
+fi
+
+ip=$(ly-go-crt -c ~/etc/config.yaml -p $1 -i $2)
+if [ -z $ip ];then
+    echo "ip empty"
+fi
+echo "ssh "$ip
+ssh $ip
