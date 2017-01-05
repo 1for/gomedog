@@ -1,0 +1,54 @@
+#!/bin/sh
+
+
+cfile="./config.yaml"
+project=""
+addr=""
+
+function usage(){
+    echo " Usage: fssh [-c <config>] [-p <project>] [-i <index>]
+
+快速连接服务器
+
+如果没传project则返回可用project列表
+如果没传index则返回当前project可用服务列表
+
+Options:
+    -c  <config>     yaml config file (default ./config.yaml)
+    -p  <project>    project name (e.g. dev)
+    -i  <index>      server index (e.g. 0)
+    -h  help         usage (-h) / detailed help text (--help)"
+
+    exit 1;
+}
+
+while getopts c:p:i:h OPT
+do
+    case $OPT in
+        c) cfile=$OPTARG
+           ;;
+        p) project=$OPTARG
+           ;;
+        i) addr=$OPTARG
+           ;;
+        h) usage;;
+        ?) usage;;
+    esac
+done
+
+if [ -z $project ];then
+    ./crt -c $cfile
+    exit 1
+fi
+
+if [ -z $addr ];then
+    ./crt -c $cfile -p $project
+    exit 1
+fi
+
+ip=$(./crt -c $cfile -p $project -i $addr)
+if [ -z $ip ];then
+    echo "ip empty"
+fi
+echo "ssh "$ip
+ssh $ip
